@@ -2,15 +2,47 @@ import { useState, useEffect } from 'react';
 import StarRating from './StarRating';
 import bannerImg from '../assets/banner.png';
 
+const GENRES = [
+  'Fantasy', 'Mystery', 'Thriller', 'Historical Fiction', 'Science Fiction',
+  'Horror', 'Literary', 'Young Adult', 'Romance', 'Western',
+  'Contemporary', 'Classic',
+];
+
 export default function BookList({ books, onSelect, onAdd }) {
   const [coverUrls, setCoverUrls] = useState({});
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('recent');
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterGenre, setFilterGenre] = useState('');
+  const [filterRead, setFilterRead] = useState('all');
+  const [filterDnf, setFilterDnf] = useState('all');
+  const [filterDonation, setFilterDonation] = useState('all');
+  const [filterMinRating, setFilterMinRating] = useState(0);
+
+  const hasActiveFilters = filterGenre || filterRead !== 'all' || filterDnf !== 'all' || filterDonation !== 'all' || filterMinRating > 0;
+
+  function clearFilters() {
+    setFilterGenre('');
+    setFilterRead('all');
+    setFilterDnf('all');
+    setFilterDonation('all');
+    setFilterMinRating(0);
+  }
 
   const filtered = books.filter((book) => {
-    if (!search.trim()) return true;
-    const q = search.toLowerCase();
-    return book.title?.toLowerCase().includes(q) || book.author?.toLowerCase().includes(q);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      if (!book.title?.toLowerCase().includes(q) && !book.author?.toLowerCase().includes(q)) return false;
+    }
+    if (filterGenre && book.genre !== filterGenre) return false;
+    if (filterRead === 'yes' && !book.read) return false;
+    if (filterRead === 'no' && book.read) return false;
+    if (filterDnf === 'yes' && !book.dnf) return false;
+    if (filterDnf === 'no' && book.dnf) return false;
+    if (filterDonation === 'yes' && !book.forDonation) return false;
+    if (filterDonation === 'no' && book.forDonation) return false;
+    if (filterMinRating > 0 && (book.rating || 0) < filterMinRating) return false;
+    return true;
   });
 
   const sorted = [...filtered].sort((a, b) => {
@@ -56,35 +88,112 @@ export default function BookList({ books, onSelect, onAdd }) {
       </header>
 
       {books.length > 0 && (
-        <div className="search-sort-bar">
-          <input
-            type="text"
-            placeholder="Search by title or author..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-input"
-          />
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="sort-select"
-          >
-            <option value="recent">Recent</option>
-            <option value="author">Author</option>
-            <option value="title">Title</option>
-            <option value="genre">Genre</option>
-            <option value="rating">Rating</option>
-            <option value="read">Read</option>
-            <option value="dnf">DNF</option>
-            <option value="donation">Donation</option>
-          </select>
-        </div>
+        <>
+          <div className="search-sort-bar">
+            <input
+              type="text"
+              placeholder="Search by title or author..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="search-input"
+            />
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="sort-select"
+            >
+              <option value="recent">Recent</option>
+              <option value="author">Author</option>
+              <option value="title">Title</option>
+              <option value="genre">Genre</option>
+              <option value="rating">Rating</option>
+              <option value="read">Read</option>
+              <option value="dnf">DNF</option>
+              <option value="donation">Donation</option>
+            </select>
+            <button
+              className={`filter-toggle ${hasActiveFilters ? 'active' : ''}`}
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="4" y1="6" x2="20" y2="6" />
+                <line x1="7" y1="12" x2="17" y2="12" />
+                <line x1="10" y1="18" x2="14" y2="18" />
+              </svg>
+            </button>
+          </div>
+
+          {showFilters && (
+            <div className="filter-panel">
+              <div className="filter-row">
+                <span className="filter-label">Genre</span>
+                <select value={filterGenre} onChange={(e) => setFilterGenre(e.target.value)}>
+                  <option value="">All</option>
+                  {GENRES.map((g) => <option key={g} value={g}>{g}</option>)}
+                </select>
+              </div>
+
+              <div className="filter-row">
+                <span className="filter-label">Read</span>
+                <div className="filter-chips">
+                  {['all', 'yes', 'no'].map((v) => (
+                    <button key={v} className={`chip ${filterRead === v ? 'chip-active' : ''}`} onClick={() => setFilterRead(v)}>
+                      {v === 'all' ? 'All' : v === 'yes' ? 'Yes' : 'No'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="filter-row">
+                <span className="filter-label">DNF</span>
+                <div className="filter-chips">
+                  {['all', 'yes', 'no'].map((v) => (
+                    <button key={v} className={`chip ${filterDnf === v ? 'chip-active' : ''}`} onClick={() => setFilterDnf(v)}>
+                      {v === 'all' ? 'All' : v === 'yes' ? 'Yes' : 'No'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="filter-row">
+                <span className="filter-label">Donation</span>
+                <div className="filter-chips">
+                  {['all', 'yes', 'no'].map((v) => (
+                    <button key={v} className={`chip ${filterDonation === v ? 'chip-active' : ''}`} onClick={() => setFilterDonation(v)}>
+                      {v === 'all' ? 'All' : v === 'yes' ? 'Yes' : 'No'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="filter-row">
+                <span className="filter-label">Min Rating</span>
+                <div className="filter-chips">
+                  {[0, 1, 2, 3, 4, 5].map((v) => (
+                    <button key={v} className={`chip ${filterMinRating === v ? 'chip-active' : ''}`} onClick={() => setFilterMinRating(v)}>
+                      {v === 0 ? 'Any' : `${v}+`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {hasActiveFilters && (
+                <button className="clear-filters" onClick={clearFilters}>Clear Filters</button>
+              )}
+            </div>
+          )}
+        </>
       )}
 
       {books.length === 0 ? (
         <div className="empty-state">
           <p>No books yet</p>
           <p>Tap + to add your first book</p>
+        </div>
+      ) : sorted.length === 0 ? (
+        <div className="empty-state">
+          <p>No books match</p>
+          <p>Try adjusting your search or filters</p>
         </div>
       ) : (
         <div className="book-grid">
