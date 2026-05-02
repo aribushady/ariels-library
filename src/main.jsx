@@ -10,21 +10,6 @@ if ('serviceWorker' in navigator) {
   caches.keys().then((names) => names.forEach((n) => caches.delete(n)));
 }
 
-function purgeFileInputs() {
-  document.querySelectorAll('input[type="file"]').forEach((el) => el.remove());
-}
-
-purgeFileInputs();
-setTimeout(purgeFileInputs, 100);
-setTimeout(purgeFileInputs, 500);
-
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
-    purgeFileInputs();
-    setTimeout(purgeFileInputs, 200);
-  }
-});
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />

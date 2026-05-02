@@ -35,10 +35,13 @@ export default function BookForm({ book, onSave, onCancel }) {
       else if (book.dnf) setStatus('dnf');
       else setStatus('none');
       setForDonation(book.forDonation || false);
+      setCoverFile(null);
       if (book.coverImage) {
         const url = URL.createObjectURL(book.coverImage);
         setCoverUrl(url);
         return () => URL.revokeObjectURL(url);
+      } else {
+        setCoverUrl(null);
       }
     }
   }, [book]);

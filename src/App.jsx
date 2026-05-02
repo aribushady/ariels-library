@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getAllBooks, addBook, updateBook, deleteBook } from './db';
+import { getAllBooks, getBook, addBook, updateBook, deleteBook } from './db';
 import BookList from './components/BookList';
 import BookForm from './components/BookForm';
 import BookDetail from './components/BookDetail';
@@ -34,13 +34,15 @@ export default function App() {
     setSelectedBook(null);
   }
 
-  function handleSelect(book) {
-    setSelectedBook(book);
+  async function handleSelect(book) {
+    const fresh = await getBook(book.id);
+    setSelectedBook(fresh);
     setView('detail');
   }
 
-  function handleEdit(book) {
-    setSelectedBook(book);
+  async function handleEdit(book) {
+    const fresh = await getBook(book.id);
+    setSelectedBook(fresh);
     setView('form');
   }
 

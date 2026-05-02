@@ -491,23 +491,22 @@ body::after {
   font-size: 14px;
 }
 
-.cover-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.cover-buttons button {
+.cover-label {
   background: var(--surface-2);
-  border: none;
   color: var(--text);
   padding: 10px 16px;
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
+  text-align: center;
 }
 
-.cover-buttons button:active {
+.cover-label:active {
   opacity: 0.7;
+}
+
+.cover-input-hidden {
+  display: none;
 }
 
 /* Book form */
