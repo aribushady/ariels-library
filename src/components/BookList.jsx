@@ -3,9 +3,9 @@ import StarRating from './StarRating';
 import bannerImg from '../assets/banner.png';
 
 const GENRES = [
-  'Fantasy', 'Gothic', 'Southern Gothic', 'Mystery', 'Thriller', 'Historical Fiction',
-  'Science Fiction', 'Horror', 'Literary', 'Young Adult', 'Romance', 'Western',
-  'Contemporary', 'Classic',
+  'Classic', 'Coming of Age', 'Contemporary', 'Fantasy', 'Gothic', 'Historical Fiction',
+  'Horror', 'Literary', 'Mystery', 'Romance', 'Science Fiction', 'Southern Gothic',
+  'Psychological Thriller', 'Thriller', 'Western', 'Young Adult',
 ];
 
 export default function BookList({ books, onSelect, onAdd }) {
