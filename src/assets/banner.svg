@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120">
+  <!-- Stack of books -->
+  <g transform="translate(80, 15)">
+    <!-- Bottom book -->
+    <rect x="0" y="60" width="100" height="22" rx="3" fill="#A05C7B"/>
+    <rect x="2" y="62" width="4" height="18" rx="1" fill="#28112B" opacity="0.3"/>
+    <line x1="15" y1="68" x2="70" y2="68" stroke="#EACBD2" stroke-width="1.5" opacity="0.5"/>
+    <line x1="15" y1="74" x2="55" y2="74" stroke="#EACBD2" stroke-width="1" opacity="0.3"/>
+
+    <!-- Middle book (slightly offset) -->
+    <rect x="-8" y="36" width="110" height="22" rx="3" fill="#26413C"/>
+    <rect x="-6" y="38" width="4" height="18" rx="1" fill="#28112B" opacity="0.3"/>
+    <line x1="7" y1="44" x2="65" y2="44" stroke="#C1C3C1" stroke-width="1.5" opacity="0.5"/>
+    <line x1="7" y1="50" x2="50" y2="50" stroke="#C1C3C1" stroke-width="1" opacity="0.3"/>
+
+    <!-- Top book -->
+    <rect x="5" y="12" width="95" height="22" rx="3" fill="#EACBD2"/>
+    <rect x="7" y="14" width="4" height="18" rx="1" fill="#A05C7B" opacity="0.3"/>
+    <line x1="18" y1="20" x2="72" y2="20" stroke="#28112B" stroke-width="1.5" opacity="0.4"/>
+    <line x1="18" y1="26" x2="58" y2="26" stroke="#28112B" stroke-width="1" opacity="0.2"/>
+
+    <!-- Standing book leaning against stack -->
+    <rect x="105" y="5" width="20" height="77" rx="3" fill="#C1C3C1" transform="rotate(8, 115, 43)"/>
+    <line x1="113" y1="15" x2="113" y2="70" stroke="#26413C" stroke-width="1.5" opacity="0.3"/>
+  </g>
+
+  <!-- Iced coffee -->
+  <g transform="translate(260, 8)">
+    <!-- Straw -->
+    <rect x="32" y="-2" width="4" height="50" rx="2" fill="#A05C7B"/>
+    <rect x="28" y="-5" width="12" height="6" rx="2" fill="#A05C7B" opacity="0.7"/>
+
+    <!-- Cup body (tapered) -->
+    <path d="M15,25 L12,95 Q12,102 19,102 L49,102 Q56,102 56,95 L53,25 Z" fill="#EACBD2" opacity="0.25" stroke="#EACBD2" stroke-width="1.5"/>
+
+    <!-- Lid -->
+    <rect x="11" y="22" width="46" height="7" rx="3" fill="#EACBD2" opacity="0.6"/>
+    <rect x="8" y="25" width="52" height="4" rx="2" fill="#C1C3C1" opacity="0.4"/>
+
+    <!-- Coffee liquid -->
+    <path d="M17,40 L14,90 Q14,96 20,96 L48,96 Q54,96 54,90 L51,40 Z" fill="#A05C7B" opacity="0.5"/>
+
+    <!-- Ice cubes -->
+    <rect x="22" y="45" width="12" height="10" rx="2" fill="#EACBD2" opacity="0.5" transform="rotate(-5, 28, 50)"/>
+    <rect x="36" y="50" width="10" height="9" rx="2" fill="#EACBD2" opacity="0.4" transform="rotate(8, 41, 54)"/>
+    <rect x="25" y="62" width="11" height="10" rx="2" fill="#EACBD2" opacity="0.45" transform="rotate(3, 30, 67)"/>
+
+    <!-- Condensation drops -->
+    <circle cx="18" cy="55" r="1.5" fill="#EACBD2" opacity="0.3"/>
+    <circle cx="52" cy="65" r="1.5" fill="#EACBD2" opacity="0.3"/>
+    <circle cx="16" cy="75" r="1" fill="#EACBD2" opacity="0.25"/>
+  </g>
+
+  <!-- Small decorative stars/sparkles -->
+  <g fill="#EACBD2" opacity="0.4">
+    <circle cx="240" cy="20" r="2"/>
+    <circle cx="248" cy="35" r="1.2"/>
+    <circle cx="340" cy="18" r="1.5"/>
+  </g>
+</svg>

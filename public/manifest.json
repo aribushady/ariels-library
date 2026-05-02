@@ -1,0 +1,16 @@
+{
+  "name": "Ariel's Library",
+  "short_name": "Library",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#28112B",
+  "theme_color": "#28112B",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
