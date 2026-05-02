@@ -1,8 +1,19 @@
+import { useState, useRef } from 'react';
+
 export default function CoverPicker({ coverUrl, onChange }) {
+  const [showInput, setShowInput] = useState(false);
+  const inputRef = useRef(null);
+
   function handleFile(e) {
     const file = e.target.files?.[0];
     if (file) onChange(file);
     e.target.value = '';
+    setShowInput(false);
+  }
+
+  function handleClick() {
+    setShowInput(true);
+    setTimeout(() => inputRef.current?.click(), 0);
   }
 
   return (
@@ -12,15 +23,19 @@ export default function CoverPicker({ coverUrl, onChange }) {
       ) : (
         <div className="cover-placeholder">No Cover</div>
       )}
-      <label className="cover-label">
+      <button type="button" className="cover-label" onClick={handleClick}>
         Add Cover Photo
+      </button>
+      {showInput && (
         <input
+          ref={inputRef}
           type="file"
           accept="image/png, image/jpeg, image/webp, image/heic"
           onChange={handleFile}
+          onBlur={() => setShowInput(false)}
           className="cover-input-hidden"
         />
-      </label>
+      )}
     </div>
   );
 }
