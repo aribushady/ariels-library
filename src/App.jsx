@@ -16,6 +16,18 @@ export default function App() {
 
   useEffect(() => { loadBooks(); }, [loadBooks]);
 
+  useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'visible') {
+        setView('list');
+        setSelectedBook(null);
+        loadBooks();
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [loadBooks]);
+
   async function handleSave(data) {
     if (data.id) {
       await updateBook(data);
