@@ -29,18 +29,15 @@ export default function BookForm({ book, onSave, onCancel }) {
       setRead(book.read || false);
       setForDonation(book.forDonation || false);
       if (book.coverImage) {
-        setCoverUrl(URL.createObjectURL(book.coverImage));
+        const url = URL.createObjectURL(book.coverImage);
+        setCoverUrl(url);
+        return () => URL.revokeObjectURL(url);
       }
     }
   }, [book]);
 
-  useEffect(() => {
-    return () => { if (coverUrl) URL.revokeObjectURL(coverUrl); };
-  }, [coverUrl]);
-
   function handleCoverChange(file) {
     setCoverFile(file);
-    if (coverUrl) URL.revokeObjectURL(coverUrl);
     setCoverUrl(URL.createObjectURL(file));
   }
 
