@@ -53,6 +53,8 @@ export default function BookList({ books, onSelect, onAdd }) {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterDonation, setFilterDonation] = useState('all');
   const [filterMinRating, setFilterMinRating] = useState(0);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 25;
 
   const hasActiveFilters = filterGenre || filterStatus !== 'all' || filterDonation !== 'all' || filterMinRating > 0;
 
@@ -103,6 +105,11 @@ export default function BookList({ books, onSelect, onAdd }) {
         return b.createdAt - a.createdAt;
     }
   });
+
+  const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+  const paged = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [search, sortBy, filterGenre, filterStatus, filterDonation, filterMinRating]);
 
   useEffect(() => {
     const urls = {};
@@ -224,14 +231,14 @@ export default function BookList({ books, onSelect, onAdd }) {
           <p>No books yet</p>
           <p>Tap + to add your first book</p>
         </div>
-      ) : sorted.length === 0 ? (
+      ) : paged.length === 0 && sorted.length === 0 ? (
         <div className="empty-state">
           <p>No books match</p>
           <p>Try adjusting your search or filters</p>
         </div>
       ) : (
         <div className="book-grid">
-          {sorted.map((book) => (
+          {paged.map((book) => (
             <button key={book.id} className="book-card" onClick={() => onSelect(book)}>
               {coverUrls[book.id] ? (
                 <img src={coverUrls[book.id]} alt={book.title} className="card-cover" />
@@ -251,6 +258,26 @@ export default function BookList({ books, onSelect, onAdd }) {
               </div>
             </button>
           ))}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            className="page-btn"
+            disabled={page <= 1}
+            onClick={() => { setPage(page - 1); window.scrollTo(0, 0); }}
+          >
+            ← Prev
+          </button>
+          <span className="page-info">{page} / {totalPages}</span>
+          <button
+            className="page-btn"
+            disabled={page >= totalPages}
+            onClick={() => { setPage(page + 1); window.scrollTo(0, 0); }}
+          >
+            Next →
+          </button>
         </div>
       )}
 
