@@ -38,7 +38,9 @@ export default function BookDetail({ book, onEdit, onDelete, onBack }) {
         )}
 
         <div className="detail-meta">
-          {book.genre && <span className="badge genre-badge">{book.genre}</span>}
+          {(book.genres || (book.genre ? [book.genre] : [])).map((g) => (
+            <span key={g} className="badge genre-badge">{g}</span>
+          ))}
           {book.read && <span className="badge read-badge">Read</span>}
           {book.inProgress && <span className="badge progress-badge">In Progress</span>}
           {book.dnf && <span className="badge dnf-badge">DNF</span>}

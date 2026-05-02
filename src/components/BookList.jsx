@@ -32,7 +32,8 @@ export default function BookList({ books, onSelect, onAdd }) {
       const q = search.toLowerCase();
       if (!book.title?.toLowerCase().includes(q) && !book.author?.toLowerCase().includes(q)) return false;
     }
-    if (filterGenre && book.genre !== filterGenre) return false;
+    const bookGenres = book.genres || (book.genre ? [book.genre] : []);
+    if (filterGenre && !bookGenres.includes(filterGenre)) return false;
     if (filterStatus === 'read' && !book.read) return false;
     if (filterStatus === 'inProgress' && !book.inProgress) return false;
     if (filterStatus === 'dnf' && !book.dnf) return false;
@@ -53,7 +54,7 @@ export default function BookList({ books, onSelect, onAdd }) {
       case 'title':
         return (a.title || '').localeCompare(b.title || '');
       case 'genre':
-        return (a.genre || '').localeCompare(b.genre || '');
+        return ((a.genres || [])[0] || a.genre || '').localeCompare((b.genres || [])[0] || b.genre || '');
       case 'rating':
         return (b.rating || 0) - (a.rating || 0);
       case 'status': {

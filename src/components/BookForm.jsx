@@ -12,7 +12,7 @@ export default function BookForm({ book, onSave, onCancel }) {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [pages, setPages] = useState('');
-  const [genre, setGenre] = useState('');
+  const [genres, setGenres] = useState([]);
   const [series, setSeries] = useState('');
   const [seriesNumber, setSeriesNumber] = useState('');
   const [rating, setRating] = useState(0);
@@ -26,7 +26,7 @@ export default function BookForm({ book, onSave, onCancel }) {
       setTitle(book.title || '');
       setAuthor(book.author || '');
       setPages(book.pages?.toString() || '');
-      setGenre(book.genre || '');
+      setGenres(Array.isArray(book.genres) ? book.genres : book.genre ? [book.genre] : []);
       setSeries(book.series || '');
       setSeriesNumber(book.seriesNumber?.toString() || '');
       setRating(book.rating || 0);
@@ -60,7 +60,8 @@ export default function BookForm({ book, onSave, onCancel }) {
       title: title.trim(),
       author: author.trim(),
       pages: pages ? parseInt(pages, 10) : null,
-      genre,
+      genres,
+      genre: genres[0] || '',
       series: series.trim() || null,
       seriesNumber: seriesNumber ? parseFloat(seriesNumber) : null,
       rating,
@@ -122,15 +123,30 @@ export default function BookForm({ book, onSave, onCancel }) {
           />
         </label>
 
-        <label>
-          Genre
-          <select value={genre} onChange={(e) => setGenre(e.target.value)}>
-            <option value="">Select genre...</option>
-            {GENRES.map((g) => (
-              <option key={g} value={g}>{g}</option>
+        <div className="field">
+          <span className="field-label">Genres (up to 3)</span>
+          <div className="genre-selected">
+            {genres.map((g) => (
+              <span key={g} className="genre-chip">
+                {g}
+                <button type="button" onClick={() => setGenres(genres.filter((x) => x !== g))}>×</button>
+              </span>
             ))}
-          </select>
-        </label>
+          </div>
+          {genres.length < 3 && (
+            <select value="" onChange={(e) => {
+              if (e.target.value && !genres.includes(e.target.value)) {
+                setGenres([...genres, e.target.value]);
+              }
+              e.target.value = '';
+            }}>
+              <option value="">Add genre...</option>
+              {GENRES.filter((g) => !genres.includes(g)).map((g) => (
+                <option key={g} value={g}>{g}</option>
+              ))}
+            </select>
+          )}
+        </div>
 
         <div className="series-row">
           <label className="series-name">

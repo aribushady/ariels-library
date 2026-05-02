@@ -560,6 +560,33 @@ body::after {
   padding-right: 32px;
 }
 
+.genre-selected {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.genre-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(124, 110, 240, 0.2);
+  color: var(--accent-light);
+  padding: 5px 8px 5px 10px;
+  border-radius: 16px;
+  font-size: 13px;
+}
+
+.genre-chip button {
+  background: none;
+  border: none;
+  color: var(--accent-light);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+}
+
 .series-row {
   display: flex;
   gap: 10px;
