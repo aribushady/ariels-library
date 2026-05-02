@@ -3,8 +3,8 @@ import StarRating from './StarRating';
 import CoverPicker from './CoverPicker';
 
 const GENRES = [
-  'Action', 'Adventure', 'Classic', 'Coming of Age', 'Contemporary', 'Crime', 'Dystopian', 'Fantasy',
-  'Fiction', 'Folklore', 'Gothic', 'Historical Fiction', 'Horror', 'Literary',
+  'Action', 'Adventure', 'Anthology', 'Classic', 'Coming of Age', 'Contemporary', 'Crime', 'Dystopian', 'Fantasy',
+  'Fiction', 'Folklore', 'Gothic', 'Historical Fiction', 'Horror', 'Humor', 'Literary',
   'Magical Realism', 'Mystery', 'Noir', 'Political Intrigue', 'Postmodern',
   'Psychological Thriller', 'Retelling', 'Romance', 'Science Fiction', 'Southern Gothic',
   'Surrealism', 'Suspense', 'Thriller', 'Tie-In Fiction', 'Weird Fiction', 'Western', 'Young Adult',
