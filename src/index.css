@@ -106,6 +106,7 @@ body::after {
   height: auto;
   mix-blend-mode: screen;
   border-radius: 8px;
+  filter: sepia(0.6) hue-rotate(280deg) saturate(1.2) brightness(1.1);
 }
 
 .back-btn, .save-btn, .edit-btn {
