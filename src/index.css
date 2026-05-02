@@ -290,25 +290,34 @@ body {
 /* Star rating */
 .star-rating {
   display: flex;
-  gap: 4px;
+  gap: 2px;
+  align-items: center;
 }
 
 .star-rating .star {
   background: none;
   border: none;
-  font-size: 22px;
   cursor: pointer;
   padding: 2px;
-  color: var(--gold-dim);
   line-height: 1;
-}
-
-.star-rating .star.filled {
-  color: var(--gold);
 }
 
 .star-rating .star:disabled {
   cursor: default;
+}
+
+.star-outline {
+  color: var(--gold-dim);
+}
+
+.star-fill {
+  color: var(--gold);
+}
+
+.star-value {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-left: 4px;
 }
 
 /* Cover picker */
