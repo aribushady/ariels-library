@@ -3,7 +3,7 @@ import StarRating from './StarRating';
 import CoverPicker from './CoverPicker';
 
 const GENRES = [
-  'Classic', 'Coming of Age', 'Contemporary', 'Fantasy', 'Gothic', 'Historical Fiction',
+  'Adventure', 'Classic', 'Coming of Age', 'Contemporary', 'Fantasy', 'Gothic', 'Historical Fiction',
   'Horror', 'Literary', 'Mystery', 'Romance', 'Science Fiction', 'Southern Gothic',
   'Psychological Thriller', 'Thriller', 'Western', 'Young Adult',
 ];
