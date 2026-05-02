@@ -3,9 +3,10 @@ import StarRating from './StarRating';
 import CoverPicker from './CoverPicker';
 
 const GENRES = [
-  'Adventure', 'Classic', 'Coming of Age', 'Contemporary', 'Dystopian', 'Fantasy', 'Fiction', 'Gothic', 'Historical Fiction',
-  'Horror', 'Literary', 'Magical Realism', 'Mystery', 'Romance', 'Science Fiction', 'Southern Gothic',
-  'Psychological Thriller', 'Thriller', 'Western', 'Young Adult',
+  'Adventure', 'Classic', 'Coming of Age', 'Contemporary', 'Dystopian', 'Fantasy', 'Fiction',
+  'Gothic', 'Historical Fiction', 'Horror', 'Literary', 'Magical Realism', 'Mystery',
+  'Postmodern', 'Psychological Thriller', 'Romance', 'Science Fiction', 'Southern Gothic',
+  'Surrealism', 'Thriller', 'Tie-In Fiction', 'Weird Fiction', 'Western', 'Young Adult',
 ];
 
 export default function BookForm({ book, onSave, onCancel }) {
