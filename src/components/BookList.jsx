@@ -54,7 +54,7 @@ export default function BookList({ books, onSelect, onAdd }) {
   const [filterDonation, setFilterDonation] = useState('all');
   const [filterMinRating, setFilterMinRating] = useState(0);
   const [page, setPage] = useState(1);
-  const PAGE_SIZE = 25;
+  const PAGE_SIZE = 30;
 
   const hasActiveFilters = filterGenre || filterStatus !== 'all' || filterDonation !== 'all' || filterMinRating > 0;
 
