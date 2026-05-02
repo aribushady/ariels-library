@@ -1,13 +1,13 @@
 import { useRef } from 'react';
 
 export default function CoverPicker({ coverUrl, onChange }) {
-  const cameraRef = useRef();
-  const libraryRef = useRef();
+  const inputRef = useRef();
 
   function handleFile(e) {
     const file = e.target.files?.[0];
     if (!file) return;
     onChange(file);
+    e.target.value = '';
   }
 
   return (
@@ -18,23 +18,12 @@ export default function CoverPicker({ coverUrl, onChange }) {
         <div className="cover-placeholder">No Cover</div>
       )}
       <div className="cover-buttons">
-        <button type="button" onClick={() => cameraRef.current?.click()}>
-          📷 Take Photo
-        </button>
-        <button type="button" onClick={() => libraryRef.current?.click()}>
-          🖼️ Choose Photo
+        <button type="button" onClick={() => inputRef.current?.click()}>
+          Add Cover Photo
         </button>
       </div>
       <input
-        ref={cameraRef}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        onChange={handleFile}
-        hidden
-      />
-      <input
-        ref={libraryRef}
+        ref={inputRef}
         type="file"
         accept="image/*"
         onChange={handleFile}
