@@ -359,6 +359,11 @@ body::after {
   color: var(--blue);
 }
 
+.progress-badge {
+  background: rgba(240, 192, 64, 0.2);
+  color: var(--gold);
+}
+
 .dnf-badge {
   background: rgba(224, 85, 85, 0.2);
   color: var(--danger);
@@ -541,6 +546,12 @@ body::after {
 .book-form select:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+.status-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .book-form select {

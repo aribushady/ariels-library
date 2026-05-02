@@ -14,17 +14,15 @@ export default function BookList({ books, onSelect, onAdd }) {
   const [sortBy, setSortBy] = useState('recent');
   const [showFilters, setShowFilters] = useState(false);
   const [filterGenre, setFilterGenre] = useState('');
-  const [filterRead, setFilterRead] = useState('all');
-  const [filterDnf, setFilterDnf] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
   const [filterDonation, setFilterDonation] = useState('all');
   const [filterMinRating, setFilterMinRating] = useState(0);
 
-  const hasActiveFilters = filterGenre || filterRead !== 'all' || filterDnf !== 'all' || filterDonation !== 'all' || filterMinRating > 0;
+  const hasActiveFilters = filterGenre || filterStatus !== 'all' || filterDonation !== 'all' || filterMinRating > 0;
 
   function clearFilters() {
     setFilterGenre('');
-    setFilterRead('all');
-    setFilterDnf('all');
+    setFilterStatus('all');
     setFilterDonation('all');
     setFilterMinRating(0);
   }
@@ -35,10 +33,10 @@ export default function BookList({ books, onSelect, onAdd }) {
       if (!book.title?.toLowerCase().includes(q) && !book.author?.toLowerCase().includes(q)) return false;
     }
     if (filterGenre && book.genre !== filterGenre) return false;
-    if (filterRead === 'yes' && !book.read) return false;
-    if (filterRead === 'no' && book.read) return false;
-    if (filterDnf === 'yes' && !book.dnf) return false;
-    if (filterDnf === 'no' && book.dnf) return false;
+    if (filterStatus === 'read' && !book.read) return false;
+    if (filterStatus === 'inProgress' && !book.inProgress) return false;
+    if (filterStatus === 'dnf' && !book.dnf) return false;
+    if (filterStatus === 'notStarted' && (book.read || book.inProgress || book.dnf)) return false;
     if (filterDonation === 'yes' && !book.forDonation) return false;
     if (filterDonation === 'no' && book.forDonation) return false;
     if (filterMinRating > 0 && (book.rating || 0) < filterMinRating) return false;
@@ -58,10 +56,10 @@ export default function BookList({ books, onSelect, onAdd }) {
         return (a.genre || '').localeCompare(b.genre || '');
       case 'rating':
         return (b.rating || 0) - (a.rating || 0);
-      case 'read':
-        return (b.read ? 1 : 0) - (a.read ? 1 : 0);
-      case 'dnf':
-        return (b.dnf ? 1 : 0) - (a.dnf ? 1 : 0);
+      case 'status': {
+        const order = (book) => book.inProgress ? 3 : book.read ? 2 : book.dnf ? 1 : 0;
+        return order(b) - order(a);
+      }
       case 'donation':
         return (b.forDonation ? 1 : 0) - (a.forDonation ? 1 : 0);
       default:
@@ -107,8 +105,7 @@ export default function BookList({ books, onSelect, onAdd }) {
               <option value="title">Title</option>
               <option value="genre">Genre</option>
               <option value="rating">Rating</option>
-              <option value="read">Read</option>
-              <option value="dnf">DNF</option>
+              <option value="status">Status</option>
               <option value="donation">Donation</option>
             </select>
             <button
@@ -134,22 +131,17 @@ export default function BookList({ books, onSelect, onAdd }) {
               </div>
 
               <div className="filter-row">
-                <span className="filter-label">Read</span>
+                <span className="filter-label">Status</span>
                 <div className="filter-chips">
-                  {['all', 'yes', 'no'].map((v) => (
-                    <button key={v} className={`chip ${filterRead === v ? 'chip-active' : ''}`} onClick={() => setFilterRead(v)}>
-                      {v === 'all' ? 'All' : v === 'yes' ? 'Yes' : 'No'}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="filter-row">
-                <span className="filter-label">DNF</span>
-                <div className="filter-chips">
-                  {['all', 'yes', 'no'].map((v) => (
-                    <button key={v} className={`chip ${filterDnf === v ? 'chip-active' : ''}`} onClick={() => setFilterDnf(v)}>
-                      {v === 'all' ? 'All' : v === 'yes' ? 'Yes' : 'No'}
+                  {[
+                    ['all', 'All'],
+                    ['read', 'Read'],
+                    ['inProgress', 'Reading'],
+                    ['dnf', 'DNF'],
+                    ['notStarted', 'Not Started'],
+                  ].map(([val, label]) => (
+                    <button key={val} className={`chip ${filterStatus === val ? 'chip-active' : ''}`} onClick={() => setFilterStatus(val)}>
+                      {label}
                     </button>
                   ))}
                 </div>
@@ -210,6 +202,7 @@ export default function BookList({ books, onSelect, onAdd }) {
                 <StarRating value={book.rating} readonly />
                 <div className="card-badges">
                   {book.read && <span className="badge read-badge">Read</span>}
+                  {book.inProgress && <span className="badge progress-badge">Reading</span>}
                   {book.dnf && <span className="badge dnf-badge">DNF</span>}
                   {book.forDonation && <span className="badge donate-badge">Donate</span>}
                 </div>

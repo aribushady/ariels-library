@@ -16,9 +16,8 @@ export default function BookForm({ book, onSave, onCancel }) {
   const [series, setSeries] = useState('');
   const [seriesNumber, setSeriesNumber] = useState('');
   const [rating, setRating] = useState(0);
-  const [read, setRead] = useState(false);
+  const [status, setStatus] = useState('none');
   const [forDonation, setForDonation] = useState(false);
-  const [dnf, setDnf] = useState(false);
   const [coverFile, setCoverFile] = useState(null);
   const [coverUrl, setCoverUrl] = useState(null);
 
@@ -31,9 +30,11 @@ export default function BookForm({ book, onSave, onCancel }) {
       setSeries(book.series || '');
       setSeriesNumber(book.seriesNumber?.toString() || '');
       setRating(book.rating || 0);
-      setRead(book.read || false);
+      if (book.inProgress) setStatus('inProgress');
+      else if (book.read) setStatus('read');
+      else if (book.dnf) setStatus('dnf');
+      else setStatus('none');
       setForDonation(book.forDonation || false);
-      setDnf(book.dnf || false);
       if (book.coverImage) {
         const url = URL.createObjectURL(book.coverImage);
         setCoverUrl(url);
@@ -60,9 +61,10 @@ export default function BookForm({ book, onSave, onCancel }) {
       series: series.trim() || null,
       seriesNumber: seriesNumber ? parseFloat(seriesNumber) : null,
       rating,
-      read,
+      read: status === 'read',
+      inProgress: status === 'inProgress',
+      dnf: status === 'dnf',
       forDonation,
-      dnf,
     };
 
     if (coverFile) {
@@ -155,30 +157,25 @@ export default function BookForm({ book, onSave, onCancel }) {
           <StarRating value={rating} onChange={setRating} />
         </div>
 
-        <div className="toggle-row">
-          <span>Read</span>
-          <button
-            type="button"
-            className={`toggle ${read ? 'on' : ''}`}
-            onClick={() => setRead(!read)}
-            role="switch"
-            aria-checked={read}
-          >
-            <span className="toggle-knob" />
-          </button>
-        </div>
-
-        <div className="toggle-row">
-          <span>Did Not Finish</span>
-          <button
-            type="button"
-            className={`toggle ${dnf ? 'on' : ''}`}
-            onClick={() => setDnf(!dnf)}
-            role="switch"
-            aria-checked={dnf}
-          >
-            <span className="toggle-knob" />
-          </button>
+        <div className="field">
+          <span className="field-label">Reading Status</span>
+          <div className="status-chips">
+            {[
+              ['none', 'Not Started'],
+              ['inProgress', 'In Progress'],
+              ['read', 'Read'],
+              ['dnf', 'DNF'],
+            ].map(([val, label]) => (
+              <button
+                key={val}
+                type="button"
+                className={`chip ${status === val ? 'chip-active' : ''}`}
+                onClick={() => setStatus(val)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="toggle-row">
