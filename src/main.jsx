@@ -10,6 +10,8 @@ if ('serviceWorker' in navigator) {
   caches.keys().then((names) => names.forEach((n) => caches.delete(n)));
 }
 
+document.querySelectorAll('input[type="file"]').forEach((el) => el.remove());
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
