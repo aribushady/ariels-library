@@ -31,6 +31,11 @@ export default function BookDetail({ book, onEdit, onDelete, onBack }) {
 
         <h2 className="detail-title">{book.title}</h2>
         {book.author && <p className="detail-author">by {book.author}</p>}
+        {book.series && (
+          <p className="detail-series">
+            {book.series}{book.seriesNumber != null ? ` #${book.seriesNumber}` : ''}
+          </p>
+        )}
 
         <div className="detail-meta">
           {book.genre && <span className="badge genre-badge">{book.genre}</span>}

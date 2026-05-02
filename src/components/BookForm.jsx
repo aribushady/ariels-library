@@ -13,6 +13,8 @@ export default function BookForm({ book, onSave, onCancel }) {
   const [author, setAuthor] = useState('');
   const [pages, setPages] = useState('');
   const [genre, setGenre] = useState('');
+  const [series, setSeries] = useState('');
+  const [seriesNumber, setSeriesNumber] = useState('');
   const [rating, setRating] = useState(0);
   const [read, setRead] = useState(false);
   const [forDonation, setForDonation] = useState(false);
@@ -26,6 +28,8 @@ export default function BookForm({ book, onSave, onCancel }) {
       setAuthor(book.author || '');
       setPages(book.pages?.toString() || '');
       setGenre(book.genre || '');
+      setSeries(book.series || '');
+      setSeriesNumber(book.seriesNumber?.toString() || '');
       setRating(book.rating || 0);
       setRead(book.read || false);
       setForDonation(book.forDonation || false);
@@ -53,6 +57,8 @@ export default function BookForm({ book, onSave, onCancel }) {
       author: author.trim(),
       pages: pages ? parseInt(pages, 10) : null,
       genre,
+      series: series.trim() || null,
+      seriesNumber: seriesNumber ? parseFloat(seriesNumber) : null,
       rating,
       read,
       forDonation,
@@ -120,6 +126,29 @@ export default function BookForm({ book, onSave, onCancel }) {
             ))}
           </select>
         </label>
+
+        <div className="series-row">
+          <label className="series-name">
+            Series
+            <input
+              type="text"
+              value={series}
+              onChange={(e) => setSeries(e.target.value)}
+              placeholder="Series name"
+            />
+          </label>
+          <label className="series-num">
+            #
+            <input
+              type="number"
+              value={seriesNumber}
+              onChange={(e) => setSeriesNumber(e.target.value)}
+              placeholder="#"
+              min="0"
+              step="0.5"
+            />
+          </label>
+        </div>
 
         <div className="field">
           <span className="field-label">Rating</span>
