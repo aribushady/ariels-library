@@ -29,6 +29,22 @@ body {
   color: var(--text);
   min-height: 100svh;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(160, 92, 123, 0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 85% 35%, rgba(38, 65, 60, 0.4) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 70% at 50% 80%, rgba(160, 92, 123, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 90% 40% at 70% 10%, rgba(193, 195, 193, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 25% 60%, rgba(38, 65, 60, 0.3) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 80% 75%, rgba(234, 203, 210, 0.1) 0%, transparent 50%);
+  filter: blur(40px);
 }
 
 #root {
