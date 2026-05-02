@@ -16,7 +16,7 @@ export default function CoverPicker({ coverUrl, onChange }) {
         Add Cover Photo
         <input
           type="file"
-          accept="image/*"
+          accept="image/png, image/jpeg, image/webp, image/heic"
           onChange={handleFile}
           className="cover-input-hidden"
         />
