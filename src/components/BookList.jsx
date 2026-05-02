@@ -8,6 +8,40 @@ const GENRES = [
   'Psychological Thriller', 'Thriller', 'Western', 'Young Adult',
 ];
 
+function exportCSV(books) {
+  const headers = ['Title', 'Author', 'Pages', 'Genres', 'Series', 'Series #', 'Rating', 'Status', 'For Donation'];
+  const rows = books.map((b) => {
+    const genres = (b.genres || (b.genre ? [b.genre] : [])).join('; ');
+    const status = b.inProgress ? 'In Progress' : b.read ? 'Read' : b.dnf ? 'DNF' : 'Not Started';
+    return [
+      b.title || '',
+      b.author || '',
+      b.pages || '',
+      genres,
+      b.series || '',
+      b.seriesNumber ?? '',
+      b.rating || '',
+      status,
+      b.forDonation ? 'Yes' : 'No',
+    ];
+  });
+
+  const escape = (val) => {
+    const s = String(val);
+    return s.includes(',') || s.includes('"') || s.includes('\n')
+      ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+
+  const csv = [headers, ...rows].map((r) => r.map(escape).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `ariels-library-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function BookList({ books, onSelect, onAdd }) {
   const [coverUrls, setCoverUrls] = useState({});
   const [search, setSearch] = useState('');
@@ -84,6 +118,11 @@ export default function BookList({ books, onSelect, onAdd }) {
       <header className="view-header banner-header">
         <img src={bannerImg} alt="" className="banner-img" />
         <h1>Ariel's Library</h1>
+        {books.length > 0 && (
+          <button className="export-btn" onClick={() => exportCSV(books)}>
+            Export CSV
+          </button>
+        )}
       </header>
 
       {books.length > 0 && (
