@@ -4,7 +4,7 @@ import CoverPicker from './CoverPicker';
 
 const GENRES = [
   'Adventure', 'Classic', 'Coming of Age', 'Contemporary', 'Fantasy', 'Fiction', 'Gothic', 'Historical Fiction',
-  'Horror', 'Literary', 'Mystery', 'Romance', 'Science Fiction', 'Southern Gothic',
+  'Horror', 'Literary', 'Magical Realism', 'Mystery', 'Romance', 'Science Fiction', 'Southern Gothic',
   'Psychological Thriller', 'Thriller', 'Western', 'Young Adult',
 ];
 
