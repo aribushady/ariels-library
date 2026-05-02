@@ -3,11 +3,16 @@ export default function CoverPicker({ coverUrl, onChange }) {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
+    input.style.position = 'fixed';
+    input.style.top = '-9999px';
+    input.style.left = '-9999px';
+    input.style.opacity = '0';
     input.onchange = () => {
       const file = input.files?.[0];
       if (file) onChange(file);
       input.remove();
     };
+    input.oncancel = () => input.remove();
     document.body.appendChild(input);
     input.click();
   }
