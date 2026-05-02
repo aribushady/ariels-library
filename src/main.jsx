@@ -4,7 +4,10 @@ import './index.css';
 import App from './App.jsx';
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js');
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((r) => r.unregister());
+  });
+  caches.keys().then((names) => names.forEach((n) => caches.delete(n)));
 }
 
 createRoot(document.getElementById('root')).render(
