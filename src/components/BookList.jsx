@@ -3,7 +3,7 @@ import StarRating from './StarRating';
 import bannerImg from '../assets/banner.png';
 
 const GENRES = [
-  'Adventure', 'Classic', 'Coming of Age', 'Contemporary', 'Fantasy', 'Gothic', 'Historical Fiction',
+  'Adventure', 'Classic', 'Coming of Age', 'Contemporary', 'Fantasy', 'Fiction', 'Gothic', 'Historical Fiction',
   'Horror', 'Literary', 'Mystery', 'Romance', 'Science Fiction', 'Southern Gothic',
   'Psychological Thriller', 'Thriller', 'Western', 'Young Adult',
 ];
