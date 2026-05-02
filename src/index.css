@@ -374,6 +374,15 @@ body::after {
   text-overflow: ellipsis;
 }
 
+.card-series {
+  font-size: 11px;
+  color: var(--accent-light);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .card-author {
   font-size: 12px;
   color: var(--text-secondary);

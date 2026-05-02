@@ -248,6 +248,9 @@ export default function BookList({ books, onSelect, onAdd }) {
               <div className="card-info">
                 <span className="card-title">{book.title}</span>
                 <span className="card-author">{book.author}</span>
+                {book.series && (
+                  <span className="card-series">{book.series}{book.seriesNumber != null ? ` #${book.seriesNumber}` : ''}</span>
+                )}
                 <StarRating value={book.rating} readonly />
                 <div className="card-badges">
                   {book.read && <span className="badge read-badge">Read</span>}
