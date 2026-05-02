@@ -3,8 +3,8 @@ import StarRating from './StarRating';
 import bannerImg from '../assets/banner.png';
 
 const GENRES = [
-  'Fantasy', 'Mystery', 'Thriller', 'Historical Fiction', 'Science Fiction',
-  'Horror', 'Literary', 'Young Adult', 'Romance', 'Western',
+  'Fantasy', 'Gothic', 'Southern Gothic', 'Mystery', 'Thriller', 'Historical Fiction',
+  'Science Fiction', 'Horror', 'Literary', 'Young Adult', 'Romance', 'Western',
   'Contemporary', 'Classic',
 ];
 
