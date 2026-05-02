@@ -239,6 +239,11 @@ body {
   color: var(--blue);
 }
 
+.dnf-badge {
+  background: rgba(224, 85, 85, 0.2);
+  color: var(--danger);
+}
+
 .genre-badge {
   background: rgba(124, 110, 240, 0.2);
   color: var(--accent-light);

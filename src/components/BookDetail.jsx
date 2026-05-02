@@ -35,6 +35,7 @@ export default function BookDetail({ book, onEdit, onDelete, onBack }) {
         <div className="detail-meta">
           {book.genre && <span className="badge genre-badge">{book.genre}</span>}
           {book.read && <span className="badge read-badge">Read</span>}
+          {book.dnf && <span className="badge dnf-badge">DNF</span>}
           {book.forDonation && <span className="badge donate-badge">For Donation</span>}
         </div>
 

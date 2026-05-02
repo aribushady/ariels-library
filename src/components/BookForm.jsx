@@ -16,6 +16,7 @@ export default function BookForm({ book, onSave, onCancel }) {
   const [rating, setRating] = useState(0);
   const [read, setRead] = useState(false);
   const [forDonation, setForDonation] = useState(false);
+  const [dnf, setDnf] = useState(false);
   const [coverFile, setCoverFile] = useState(null);
   const [coverUrl, setCoverUrl] = useState(null);
 
@@ -28,6 +29,7 @@ export default function BookForm({ book, onSave, onCancel }) {
       setRating(book.rating || 0);
       setRead(book.read || false);
       setForDonation(book.forDonation || false);
+      setDnf(book.dnf || false);
       if (book.coverImage) {
         const url = URL.createObjectURL(book.coverImage);
         setCoverUrl(url);
@@ -54,6 +56,7 @@ export default function BookForm({ book, onSave, onCancel }) {
       rating,
       read,
       forDonation,
+      dnf,
     };
 
     if (coverFile) {
@@ -131,6 +134,19 @@ export default function BookForm({ book, onSave, onCancel }) {
             onClick={() => setRead(!read)}
             role="switch"
             aria-checked={read}
+          >
+            <span className="toggle-knob" />
+          </button>
+        </div>
+
+        <div className="toggle-row">
+          <span>Did Not Finish</span>
+          <button
+            type="button"
+            className={`toggle ${dnf ? 'on' : ''}`}
+            onClick={() => setDnf(!dnf)}
+            role="switch"
+            aria-checked={dnf}
           >
             <span className="toggle-knob" />
           </button>

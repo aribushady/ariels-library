@@ -28,6 +28,8 @@ export default function BookList({ books, onSelect, onAdd }) {
         return (b.rating || 0) - (a.rating || 0);
       case 'read':
         return (b.read ? 1 : 0) - (a.read ? 1 : 0);
+      case 'dnf':
+        return (b.dnf ? 1 : 0) - (a.dnf ? 1 : 0);
       case 'donation':
         return (b.forDonation ? 1 : 0) - (a.forDonation ? 1 : 0);
       default:
@@ -73,6 +75,7 @@ export default function BookList({ books, onSelect, onAdd }) {
             <option value="genre">Genre</option>
             <option value="rating">Rating</option>
             <option value="read">Read</option>
+            <option value="dnf">DNF</option>
             <option value="donation">Donation</option>
           </select>
         </div>
@@ -98,6 +101,7 @@ export default function BookList({ books, onSelect, onAdd }) {
                 <StarRating value={book.rating} readonly />
                 <div className="card-badges">
                   {book.read && <span className="badge read-badge">Read</span>}
+                  {book.dnf && <span className="badge dnf-badge">DNF</span>}
                   {book.forDonation && <span className="badge donate-badge">Donate</span>}
                 </div>
               </div>
