@@ -5,11 +5,34 @@ import bannerImg from '../assets/banner.png';
 export default function BookList({ books, onSelect, onAdd }) {
   const [coverUrls, setCoverUrls] = useState({});
   const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('recent');
 
   const filtered = books.filter((book) => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
     return book.title?.toLowerCase().includes(q) || book.author?.toLowerCase().includes(q);
+  });
+
+  const sorted = [...filtered].sort((a, b) => {
+    switch (sortBy) {
+      case 'author': {
+        const lastA = (a.author || '').trim().split(/\s+/).pop().toLowerCase();
+        const lastB = (b.author || '').trim().split(/\s+/).pop().toLowerCase();
+        return lastA.localeCompare(lastB);
+      }
+      case 'title':
+        return (a.title || '').localeCompare(b.title || '');
+      case 'genre':
+        return (a.genre || '').localeCompare(b.genre || '');
+      case 'rating':
+        return (b.rating || 0) - (a.rating || 0);
+      case 'read':
+        return (b.read ? 1 : 0) - (a.read ? 1 : 0);
+      case 'donation':
+        return (b.forDonation ? 1 : 0) - (a.forDonation ? 1 : 0);
+      default:
+        return b.createdAt - a.createdAt;
+    }
   });
 
   useEffect(() => {
@@ -31,13 +54,27 @@ export default function BookList({ books, onSelect, onAdd }) {
       </header>
 
       {books.length > 0 && (
-        <div className="search-bar">
+        <div className="search-sort-bar">
           <input
             type="text"
             placeholder="Search by title or author..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            className="search-input"
           />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="sort-select"
+          >
+            <option value="recent">Recent</option>
+            <option value="author">Author</option>
+            <option value="title">Title</option>
+            <option value="genre">Genre</option>
+            <option value="rating">Rating</option>
+            <option value="read">Read</option>
+            <option value="donation">Donation</option>
+          </select>
         </div>
       )}
 
@@ -48,7 +85,7 @@ export default function BookList({ books, onSelect, onAdd }) {
         </div>
       ) : (
         <div className="book-grid">
-          {filtered.map((book) => (
+          {sorted.map((book) => (
             <button key={book.id} className="book-card" onClick={() => onSelect(book)}>
               {coverUrls[book.id] ? (
                 <img src={coverUrls[book.id]} alt={book.title} className="card-cover" />
