@@ -1,9 +1,12 @@
-import { useId } from 'react';
+import { useRef } from 'react';
 
 const STEPS = [0, 0.25, 0.5, 0.75, 1];
 
+let counter = 0;
+
 export default function StarRating({ value = 0, onChange, readonly = false }) {
-  const id = useId();
+  const idRef = useRef(`sr-${++counter}`);
+  const prefix = idRef.current;
 
   function handleTap(starIndex) {
     if (readonly) return;
@@ -19,7 +22,7 @@ export default function StarRating({ value = 0, onChange, readonly = false }) {
 
   function renderStar(starIndex) {
     const fill = Math.max(0, Math.min(1, value - (starIndex - 1)));
-    const clipId = `${id}-${starIndex}`;
+    const clipId = `${prefix}-${starIndex}`;
 
     return (
       <button
