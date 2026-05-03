@@ -145,6 +145,7 @@ export default function App() {
       return (
         <BookForm
           book={selectedBook}
+          books={books}
           onSave={handleSave}
           onCancel={() => { setView(selectedBook ? 'detail' : 'list'); }}
         />

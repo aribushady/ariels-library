@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import StarRating from './StarRating';
 import CoverPicker from './CoverPicker';
 
@@ -10,7 +10,7 @@ const GENRES = [
   'Surrealism', 'Suspense', 'Thriller', 'Tie-In Fiction', 'Weird Fiction', 'Western', 'Young Adult',
 ];
 
-export default function BookForm({ book, onSave, onCancel }) {
+export default function BookForm({ book, books = [], onSave, onCancel }) {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [pages, setPages] = useState('');
@@ -23,6 +23,12 @@ export default function BookForm({ book, onSave, onCancel }) {
   const [section, setSection] = useState('fiction');
   const [coverFile, setCoverFile] = useState(null);
   const [coverUrl, setCoverUrl] = useState(null);
+
+  const existingSeries = useMemo(() => {
+    const names = new Set();
+    books.forEach((b) => { if (b.series) names.add(b.series); });
+    return [...names].sort();
+  }, [books]);
 
   useEffect(() => {
     if (book) {
@@ -177,7 +183,12 @@ export default function BookForm({ book, onSave, onCancel }) {
               value={series}
               onChange={(e) => setSeries(e.target.value)}
               placeholder="Series name"
+              list="series-list"
+              autoComplete="off"
             />
+            <datalist id="series-list">
+              {existingSeries.map((s) => <option key={s} value={s} />)}
+            </datalist>
           </label>
           <label className="series-num">
             #
