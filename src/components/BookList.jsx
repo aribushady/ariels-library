@@ -68,6 +68,7 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('recent');
   const [showFilters, setShowFilters] = useState(false);
+  const [showImportInput, setShowImportInput] = useState(false);
   const [filterGenre, setFilterGenre] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterDonation, setFilterDonation] = useState('all');
@@ -151,19 +152,26 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
             Export
           </button>
         )}
-        <label className="export-btn import-btn">
-          Import
-          <input
-            type="file"
-            accept=".zip"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) onImport(file);
-              e.target.value = '';
-            }}
-            hidden
-          />
-        </label>
+        {showImportInput ? (
+          <label className="export-btn import-btn">
+            Choose File
+            <input
+              type="file"
+              accept=".zip"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) onImport(file);
+                e.target.value = '';
+                setShowImportInput(false);
+              }}
+              hidden
+            />
+          </label>
+        ) : (
+          <button className="export-btn import-btn" onClick={() => setShowImportInput(true)}>
+            Import
+          </button>
+        )}
       </header>
 
       {books.length > 0 && (
