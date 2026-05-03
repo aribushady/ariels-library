@@ -76,10 +76,13 @@ export default function App() {
       const genres = get('Genres') ? get('Genres').split('; ').filter(Boolean) : [];
       const statusVal = get('Status');
 
+      const sectionVal = (get('Section') || 'fiction').toLowerCase();
+
       const bookData = {
         title: get('Title'),
         author: get('Author'),
         pages: get('Pages') ? parseInt(get('Pages'), 10) : null,
+        section: sectionVal === 'nonfiction' ? 'nonfiction' : 'fiction',
         genres,
         genre: genres[0] || '',
         series: get('Series') || null,

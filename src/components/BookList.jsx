@@ -15,7 +15,7 @@ async function exportLibrary(books) {
   const zip = new JSZip();
   const coversFolder = zip.folder('covers');
 
-  const headers = ['Title', 'Author', 'Pages', 'Genres', 'Series', 'Series #', 'Rating', 'Status', 'For Donation', 'Cover'];
+  const headers = ['Title', 'Author', 'Pages', 'Section', 'Genres', 'Series', 'Series #', 'Rating', 'Status', 'For Donation', 'Cover'];
   const rows = [];
 
   for (let i = 0; i < books.length; i++) {
@@ -35,6 +35,7 @@ async function exportLibrary(books) {
       b.title || '',
       b.author || '',
       b.pages || '',
+      b.section || 'fiction',
       genres,
       b.series || '',
       b.seriesNumber ?? '',
@@ -73,6 +74,7 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterDonation, setFilterDonation] = useState('all');
   const [filterMinRating, setFilterMinRating] = useState(0);
+  const [activeSection, setActiveSection] = useState('all');
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 30;
 
@@ -86,6 +88,10 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
   }
 
   const filtered = books.filter((book) => {
+    if (activeSection !== 'all') {
+      const bookSection = book.section || 'fiction';
+      if (bookSection !== activeSection) return false;
+    }
     if (search.trim()) {
       const q = search.toLowerCase();
       if (!book.title?.toLowerCase().includes(q) && !book.author?.toLowerCase().includes(q)) return false;
@@ -129,7 +135,7 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
   const paged = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  useEffect(() => { setPage(1); }, [search, sortBy, filterGenre, filterStatus, filterDonation, filterMinRating]);
+  useEffect(() => { setPage(1); }, [search, sortBy, filterGenre, filterStatus, filterDonation, filterMinRating, activeSection]);
 
   useEffect(() => {
     const urls = {};
@@ -176,6 +182,18 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
 
       {books.length > 0 && (
         <>
+          <div className="section-tabs">
+            {[['all', 'All'], ['fiction', 'Fiction'], ['nonfiction', 'Nonfiction']].map(([val, label]) => (
+              <button
+                key={val}
+                className={`section-tab ${activeSection === val ? 'section-tab-active' : ''}`}
+                onClick={() => setActiveSection(val)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
           <div className="search-sort-bar">
             <input
               type="text"

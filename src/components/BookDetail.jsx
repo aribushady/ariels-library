@@ -38,6 +38,9 @@ export default function BookDetail({ book, onEdit, onDelete, onBack }) {
         )}
 
         <div className="detail-meta">
+          <span className={`badge ${(book.section || 'fiction') === 'fiction' ? 'fiction-badge' : 'nonfiction-badge'}`}>
+            {(book.section || 'fiction') === 'fiction' ? 'Fiction' : 'Nonfiction'}
+          </span>
           {(book.genres || (book.genre ? [book.genre] : [])).map((g) => (
             <span key={g} className="badge genre-badge">{g}</span>
           ))}

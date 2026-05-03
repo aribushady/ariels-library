@@ -20,6 +20,7 @@ export default function BookForm({ book, onSave, onCancel }) {
   const [rating, setRating] = useState(0);
   const [status, setStatus] = useState('none');
   const [forDonation, setForDonation] = useState(false);
+  const [section, setSection] = useState('fiction');
   const [coverFile, setCoverFile] = useState(null);
   const [coverUrl, setCoverUrl] = useState(null);
 
@@ -37,6 +38,7 @@ export default function BookForm({ book, onSave, onCancel }) {
       else if (book.dnf) setStatus('dnf');
       else setStatus('none');
       setForDonation(book.forDonation || false);
+      setSection(book.section || 'fiction');
       setCoverFile(null);
       if (book.coverImage) {
         const url = URL.createObjectURL(book.coverImage);
@@ -71,6 +73,7 @@ export default function BookForm({ book, onSave, onCancel }) {
       inProgress: status === 'inProgress',
       dnf: status === 'dnf',
       forDonation,
+      section,
     };
 
     if (coverFile) {
@@ -124,6 +127,22 @@ export default function BookForm({ book, onSave, onCancel }) {
             min="1"
           />
         </label>
+
+        <div className="field">
+          <span className="field-label">Section</span>
+          <div className="status-chips">
+            {[['fiction', 'Fiction'], ['nonfiction', 'Nonfiction']].map(([val, label]) => (
+              <button
+                key={val}
+                type="button"
+                className={`chip ${section === val ? 'chip-active' : ''}`}
+                onClick={() => setSection(val)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="field">
           <span className="field-label">Genres (up to 3)</span>
