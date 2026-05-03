@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import JSZip from 'jszip';
 import StarRating from './StarRating';
 import bannerImg from '../assets/banner.png';
 
@@ -10,12 +11,27 @@ const GENRES = [
   'Surrealism', 'Suspense', 'Thriller', 'Tie-In Fiction', 'Weird Fiction', 'Western', 'Young Adult',
 ];
 
-function exportCSV(books) {
-  const headers = ['Title', 'Author', 'Pages', 'Genres', 'Series', 'Series #', 'Rating', 'Status', 'For Donation'];
-  const rows = books.map((b) => {
+async function exportLibrary(books) {
+  const zip = new JSZip();
+  const coversFolder = zip.folder('covers');
+
+  const headers = ['Title', 'Author', 'Pages', 'Genres', 'Series', 'Series #', 'Rating', 'Status', 'For Donation', 'Cover'];
+  const rows = [];
+
+  for (let i = 0; i < books.length; i++) {
+    const b = books[i];
     const genres = (b.genres || (b.genre ? [b.genre] : [])).join('; ');
     const status = b.inProgress ? 'In Progress' : b.read ? 'Read' : b.dnf ? 'DNF' : 'Not Started';
-    return [
+    let coverFilename = '';
+
+    if (b.coverImage) {
+      const ext = b.coverImage.type?.split('/')?.[1] || 'jpg';
+      coverFilename = `cover-${i + 1}.${ext}`;
+      const buffer = await b.coverImage.arrayBuffer();
+      coversFolder.file(coverFilename, buffer);
+    }
+
+    rows.push([
       b.title || '',
       b.author || '',
       b.pages || '',
@@ -25,8 +41,9 @@ function exportCSV(books) {
       b.rating || '',
       status,
       b.forDonation ? 'Yes' : 'No',
-    ];
-  });
+      coverFilename ? `covers/${coverFilename}` : '',
+    ]);
+  }
 
   const escape = (val) => {
     const s = String(val);
@@ -35,11 +52,13 @@ function exportCSV(books) {
   };
 
   const csv = [headers, ...rows].map((r) => r.map(escape).join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
+  zip.file('library.csv', csv);
+
+  const blob = await zip.generateAsync({ type: 'blob' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `ariels-library-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.download = `ariels-library-${new Date().toISOString().slice(0, 10)}.zip`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -128,8 +147,8 @@ export default function BookList({ books, onSelect, onAdd }) {
         <img src={bannerImg} alt="" className="banner-img" />
         <h1>Ariel's Library</h1>
         {books.length > 0 && (
-          <button className="export-btn" onClick={() => exportCSV(books)}>
-            Export CSV
+          <button className="export-btn" onClick={() => exportLibrary(books)}>
+            Export
           </button>
         )}
       </header>
