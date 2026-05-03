@@ -24,6 +24,12 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
   const [coverFile, setCoverFile] = useState(null);
   const [coverUrl, setCoverUrl] = useState(null);
 
+  const existingAuthors = useMemo(() => {
+    const names = new Set();
+    books.forEach((b) => { if (b.author) names.add(b.author); });
+    return [...names].sort();
+  }, [books]);
+
   const existingSeries = useMemo(() => {
     const names = new Set();
     books.forEach((b) => { if (b.series) names.add(b.series); });
@@ -120,7 +126,12 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="Author name"
+            list="author-list"
+            autoComplete="off"
           />
+          <datalist id="author-list">
+            {existingAuthors.map((a) => <option key={a} value={a} />)}
+          </datalist>
         </label>
 
         <label>
