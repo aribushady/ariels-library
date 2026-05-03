@@ -1,8 +1,13 @@
+import { useState } from 'react';
+
 export default function CoverPicker({ coverUrl, onChange }) {
+  const [picking, setPicking] = useState(false);
+
   function handleFile(e) {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith('image/')) onChange(file);
     e.target.value = '';
+    setPicking(false);
   }
 
   return (
@@ -12,15 +17,21 @@ export default function CoverPicker({ coverUrl, onChange }) {
       ) : (
         <div className="cover-placeholder">No Cover</div>
       )}
-      <label className="cover-label">
-        Add Cover Photo
-        <input
-          type="file"
-          accept=".jpg,.jpeg,.png,.webp,.heic"
-          onChange={handleFile}
-          className="cover-input-hidden"
-        />
-      </label>
+      {picking ? (
+        <label className="cover-label">
+          Choose from Photos
+          <input
+            type="file"
+            accept=".jpg,.jpeg,.png,.webp,.heic"
+            onChange={handleFile}
+            className="cover-input-hidden"
+          />
+        </label>
+      ) : (
+        <button type="button" className="cover-label" onClick={() => setPicking(true)}>
+          Add Cover Photo
+        </button>
+      )}
     </div>
   );
 }
