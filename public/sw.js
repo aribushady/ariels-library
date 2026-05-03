@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ariels-library-v8';
+const CACHE_NAME = 'ariels-library-v9';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
