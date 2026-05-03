@@ -63,7 +63,7 @@ async function exportLibrary(books) {
   URL.revokeObjectURL(url);
 }
 
-export default function BookList({ books, onSelect, onAdd }) {
+export default function BookList({ books, onSelect, onAdd, onImport }) {
   const [coverUrls, setCoverUrls] = useState({});
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('recent');
@@ -151,6 +151,19 @@ export default function BookList({ books, onSelect, onAdd }) {
             Export
           </button>
         )}
+        <label className="export-btn import-btn">
+          Import
+          <input
+            type="file"
+            accept=".zip"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) onImport(file);
+              e.target.value = '';
+            }}
+            hidden
+          />
+        </label>
       </header>
 
       {books.length > 0 && (
