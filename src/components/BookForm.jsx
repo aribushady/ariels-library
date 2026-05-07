@@ -4,9 +4,9 @@ import CoverPicker from './CoverPicker';
 
 const GENRES = [
   'Action', 'Adventure', 'Anthology', 'Classic', 'Coming of Age', 'Contemporary', 'Craft', 'Crime', 'Dark Academia', 'Drama', 'Dystopian',
-  'Epic', 'Epistolary', 'Fantasy', 'Fiction', 'Folklore', 'Gothic', 'Heist', 'Historical Fiction', 'Horror', 'Humor', 'Literary',
+  'Epic', 'Epistolary', 'Existential', 'Fantasy', 'Fiction', 'Folklore', 'Gothic', 'Heist', 'Historical Fiction', 'Horror', 'Humor', 'Literary',
   'Magical Realism', 'Memoir', 'Mythology', 'Mystery', 'Noir', 'Poetry', 'Political Intrigue', 'Postmodern',
-  'Psychological Thriller', 'Retelling', 'Romance', 'Satire', 'Science Fiction', 'Southern Gothic',
+  'Psychological Thriller', 'Retelling', 'Romance', 'Satire', 'Science Fiction', 'Southern Gothic', 'Speculative',
   'Surrealism', 'Suspense', 'Thriller', 'Tie-In Fiction', 'True Crime', 'Weird Fiction', 'Western', 'Young Adult',
 ];
 
