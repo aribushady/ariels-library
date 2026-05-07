@@ -169,6 +169,24 @@ body::after {
   border-bottom-color: var(--accent-light);
 }
 
+/* Stats bar */
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 16px 0;
+}
+
+.stat {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.stat strong {
+  color: var(--text);
+  margin-left: 4px;
+}
+
 /* Search and sort bar */
 .search-sort-bar {
   display: flex;

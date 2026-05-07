@@ -194,6 +194,12 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
             ))}
           </div>
 
+          <div className="stats-bar">
+            <span className="stat">All <strong>{filtered.length}</strong></span>
+            <span className="stat">Read <strong>{filtered.filter((b) => b.read).length}</strong></span>
+            <span className="stat">DNF <strong>{filtered.filter((b) => b.dnf).length}</strong></span>
+          </div>
+
           <div className="search-sort-bar">
             <input
               type="text"
