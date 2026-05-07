@@ -94,7 +94,7 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
     }
     if (search.trim()) {
       const q = search.toLowerCase();
-      if (!book.title?.toLowerCase().includes(q) && !book.author?.toLowerCase().includes(q)) return false;
+      if (!book.title?.toLowerCase().includes(q) && !book.author?.toLowerCase().includes(q) && !book.series?.toLowerCase().includes(q)) return false;
     }
     const bookGenres = book.genres || (book.genre ? [book.genre] : []);
     if (filterGenre && !bookGenres.includes(filterGenre)) return false;
@@ -124,6 +124,16 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
       case 'status': {
         const order = (book) => book.inProgress ? 3 : book.read ? 2 : book.dnf ? 1 : 0;
         return order(b) - order(a);
+      }
+      case 'series': {
+        const sA = a.series || '';
+        const sB = b.series || '';
+        if (!sA && !sB) return 0;
+        if (!sA) return 1;
+        if (!sB) return -1;
+        const cmp = sA.localeCompare(sB);
+        if (cmp !== 0) return cmp;
+        return (a.seriesNumber ?? 999) - (b.seriesNumber ?? 999);
       }
       case 'donation':
         return (b.forDonation ? 1 : 0) - (a.forDonation ? 1 : 0);
@@ -203,7 +213,7 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
           <div className="search-sort-bar">
             <input
               type="text"
-              placeholder="Search by title or author..."
+              placeholder="Search by title, author, or series..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="search-input"
@@ -216,6 +226,7 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
               <option value="recent">Recent</option>
               <option value="author">Author</option>
               <option value="title">Title</option>
+              <option value="series">Series</option>
               <option value="genre">Genre</option>
               <option value="rating">Rating</option>
               <option value="status">Status</option>
