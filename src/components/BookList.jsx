@@ -4,10 +4,10 @@ import StarRating from './StarRating';
 import bannerImg from '../assets/banner.png';
 
 const GENRES = [
-  'Action', 'Adventure', 'Anthology', 'Classic', 'Coming of Age', 'Contemporary', 'Craft', 'Crime', 'Dark Academia', 'Drama', 'Dystopian',
+  'Absurdist', 'Action', 'Adventure', 'Anthology', 'Classic', 'Coming of Age', 'Contemporary', 'Craft', 'Crime', 'Dark Academia', 'Drama', 'Dystopian',
   'Epic', 'Epistolary', 'Existential', 'Fantasy', 'Fiction', 'Folklore', 'Gothic', 'Heist', 'Historical Fiction', 'Horror', 'Humor', 'Literary',
   'Magical Realism', 'Memoir', 'Mythology', 'Mystery', 'Noir', 'Poetry', 'Political Intrigue', 'Postmodern',
-  'Psychological Thriller', 'Retelling', 'Romance', 'Science Fiction', 'Southern Gothic', 'Speculative',
+  'Psychological Thriller', 'Retelling', 'Romance', 'Science Fiction', 'Short Stories', 'Southern Gothic', 'Speculative',
   'Surrealism', 'Suspense', 'Thriller', 'Tie-In Fiction', 'True Crime', 'Weird Fiction', 'Western', 'Young Adult',
 ];
 
