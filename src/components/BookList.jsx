@@ -64,7 +64,7 @@ async function exportLibrary(books) {
   URL.revokeObjectURL(url);
 }
 
-export default function BookList({ books, onSelect, onAdd, onImport }) {
+export default function BookList({ books, onSelect, onAdd, onImport, onReorder }) {
   const [coverUrls, setCoverUrls] = useState({});
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('recent');
@@ -78,6 +78,25 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 30;
 
+  const isSpecialTab = activeSection === 'reading' || activeSection === 'tbr';
+
+  const orderedList = (() => {
+    if (!isSpecialTab) return [];
+    const items = activeSection === 'reading'
+      ? books.filter((b) => b.inProgress)
+      : books.filter((b) => b.tbr);
+    const field = activeSection === 'reading' ? 'readingOrder' : 'tbrOrder';
+    return [...items].sort((a, b) => (a[field] ?? Infinity) - (b[field] ?? Infinity));
+  })();
+
+  function handleMove(index, direction) {
+    const swapIndex = index + direction;
+    if (swapIndex < 0 || swapIndex >= orderedList.length) return;
+    const field = activeSection === 'reading' ? 'readingOrder' : 'tbrOrder';
+    onReorder(orderedList[index].id, field, swapIndex);
+    onReorder(orderedList[swapIndex].id, field, index);
+  }
+
   const hasActiveFilters = filterGenre || filterStatus !== 'all' || filterDonation !== 'all' || filterMinRating > 0;
 
   function clearFilters() {
@@ -87,7 +106,7 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
     setFilterMinRating(0);
   }
 
-  const filtered = books.filter((book) => {
+  const filtered = isSpecialTab ? [] : books.filter((book) => {
     if (activeSection !== 'all') {
       const bookSection = book.section || 'fiction';
       if (bookSection !== activeSection) return false;
@@ -193,7 +212,7 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
       {books.length > 0 && (
         <>
           <div className="section-tabs">
-            {[['all', 'All'], ['fiction', 'Fiction'], ['nonfiction', 'Nonfiction']].map(([val, label]) => (
+            {[['all', 'All'], ['fiction', 'Fiction'], ['nonfiction', 'Nonfiction'], ['reading', 'Reading'], ['tbr', 'TBR']].map(([val, label]) => (
               <button
                 key={val}
                 className={`section-tab ${activeSection === val ? 'section-tab-active' : ''}`}
@@ -204,12 +223,13 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
             ))}
           </div>
 
-          <div className="stats-bar">
+          {!isSpecialTab && <div className="stats-bar">
             <span className="stat">All <strong>{filtered.length}</strong></span>
             <span className="stat">Read <strong>{filtered.filter((b) => b.read).length}</strong></span>
             <span className="stat">DNF <strong>{filtered.filter((b) => b.dnf).length}</strong></span>
-          </div>
+          </div>}
 
+          {!isSpecialTab && <>
           <div className="search-sort-bar">
             <input
               type="text"
@@ -298,10 +318,46 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
               )}
             </div>
           )}
+          </>}
         </>
       )}
 
-      {books.length === 0 ? (
+      {isSpecialTab ? (
+        orderedList.length === 0 ? (
+          <div className="empty-state">
+            <p>No books here yet</p>
+            <p>{activeSection === 'reading' ? 'Mark a book as In Progress to see it here' : 'Toggle To Be Read on a book to add it'}</p>
+          </div>
+        ) : (
+          <div className="ordered-list">
+            {orderedList.map((book, i) => (
+              <div key={book.id} className="ordered-item">
+                <span className="ordered-num">{i + 1}</span>
+                {coverUrls[book.id] ? (
+                  <img src={coverUrls[book.id]} alt={book.title} className="ordered-cover" onClick={() => onSelect(book)} />
+                ) : (
+                  <div className="ordered-cover-placeholder" onClick={() => onSelect(book)}>{book.title.charAt(0)}</div>
+                )}
+                <div className="ordered-info" onClick={() => onSelect(book)}>
+                  <span className="card-title">{book.title}</span>
+                  <span className="card-author">{book.author}</span>
+                  {book.series && (
+                    <span className="card-series">{book.series}{book.seriesNumber != null ? ` #${book.seriesNumber}` : ''}</span>
+                  )}
+                </div>
+                <div className="ordered-arrows">
+                  <button className="arrow-btn" disabled={i === 0} onClick={() => handleMove(i, -1)}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+                  </button>
+                  <button className="arrow-btn" disabled={i === orderedList.length - 1} onClick={() => handleMove(i, 1)}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      ) : books.length === 0 ? (
         <div className="empty-state">
           <p>No books yet</p>
           <p>Tap + to add your first book</p>
@@ -339,7 +395,7 @@ export default function BookList({ books, onSelect, onAdd, onImport }) {
         </div>
       )}
 
-      {totalPages > 1 && (
+      {!isSpecialTab && totalPages > 1 && (
         <div className="pagination">
           <button
             className="page-btn"

@@ -59,6 +59,14 @@ export default function App() {
     setView('form');
   }
 
+  async function handleReorder(bookId, field, newOrder) {
+    const book = await getBook(bookId);
+    if (!book) return;
+    book[field] = newOrder;
+    await updateBook(book);
+    await loadBooks();
+  }
+
   async function handleImport(file) {
     const zip = await JSZip.loadAsync(file);
     const csvFile = zip.file('library.csv');
@@ -166,6 +174,7 @@ export default function App() {
           onSelect={handleSelect}
           onAdd={() => { setSelectedBook(null); setView('form'); }}
           onImport={handleImport}
+          onReorder={handleReorder}
         />
       );
   }

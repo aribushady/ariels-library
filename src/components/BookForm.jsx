@@ -20,6 +20,7 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
   const [rating, setRating] = useState(0);
   const [status, setStatus] = useState('none');
   const [forDonation, setForDonation] = useState(false);
+  const [tbr, setTbr] = useState(false);
   const [section, setSection] = useState('fiction');
   const [coverFile, setCoverFile] = useState(null);
   const [coverUrl, setCoverUrl] = useState(null);
@@ -50,6 +51,7 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
       else if (book.dnf) setStatus('dnf');
       else setStatus('none');
       setForDonation(book.forDonation || false);
+      setTbr(book.tbr || false);
       setSection(book.section || 'fiction');
       setCoverFile(null);
       if (book.coverImage) {
@@ -85,6 +87,7 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
       inProgress: status === 'inProgress',
       dnf: status === 'dnf',
       forDonation,
+      tbr: status === 'inProgress' ? false : tbr,
       section,
     };
 
@@ -238,6 +241,19 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="toggle-row">
+          <span>To Be Read</span>
+          <button
+            type="button"
+            className={`toggle ${tbr ? 'on' : ''}`}
+            onClick={() => setTbr(!tbr)}
+            role="switch"
+            aria-checked={tbr}
+          >
+            <span className="toggle-knob" />
+          </button>
         </div>
 
         <div className="toggle-row">
