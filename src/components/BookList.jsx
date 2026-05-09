@@ -15,7 +15,7 @@ async function exportLibrary(books) {
   const zip = new JSZip();
   const coversFolder = zip.folder('covers');
 
-  const headers = ['Title', 'Author', 'Pages', 'Section', 'Genres', 'Series', 'Series #', 'Rating', 'Status', 'For Donation', 'Cover'];
+  const headers = ['Title', 'Author', 'Pages', 'Section', 'Genres', 'Series', 'Series #', 'Rating', 'Status', 'TBR', 'Reading Order', 'TBR Order', 'For Donation', 'Cover'];
   const rows = [];
 
   for (let i = 0; i < books.length; i++) {
@@ -41,6 +41,9 @@ async function exportLibrary(books) {
       b.seriesNumber ?? '',
       b.rating || '',
       status,
+      b.tbr ? 'Yes' : 'No',
+      b.readingOrder ?? '',
+      b.tbrOrder ?? '',
       b.forDonation ? 'Yes' : 'No',
       coverFilename ? `covers/${coverFilename}` : '',
     ]);

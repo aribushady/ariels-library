@@ -100,6 +100,9 @@ export default function App() {
         read: statusVal === 'Read',
         inProgress: statusVal === 'In Progress',
         dnf: statusVal === 'DNF',
+        tbr: get('TBR') === 'Yes',
+        readingOrder: get('Reading Order') ? parseInt(get('Reading Order'), 10) : undefined,
+        tbrOrder: get('TBR Order') ? parseInt(get('TBR Order'), 10) : undefined,
         forDonation: get('For Donation') === 'Yes',
       };
 
