@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import JSZip from 'jszip';
 import StarRating from './StarRating';
 import bannerImg from '../assets/banner.png';
@@ -93,8 +93,7 @@ export default function BookList({ books, onSelect, onAdd, onImport, onReorder }
     const swapIndex = index + direction;
     if (swapIndex < 0 || swapIndex >= orderedList.length) return;
     const field = activeSection === 'reading' ? 'readingOrder' : 'tbrOrder';
-    onReorder(orderedList[index].id, field, swapIndex);
-    onReorder(orderedList[swapIndex].id, field, index);
+    onReorder(orderedList[index].id, orderedList[swapIndex].id, field, swapIndex, index);
   }
 
   const hasActiveFilters = filterGenre || filterStatus !== 'all' || filterDonation !== 'all' || filterMinRating > 0;
@@ -166,15 +165,21 @@ export default function BookList({ books, onSelect, onAdd, onImport, onReorder }
 
   useEffect(() => { setPage(1); }, [search, sortBy, filterGenre, filterStatus, filterDonation, filterMinRating, activeSection]);
 
+  const coverUrlsRef = useRef({});
   useEffect(() => {
-    const urls = {};
+    const prev = coverUrlsRef.current;
+    const next = {};
+    const currentIds = new Set(books.map((b) => b.id));
     books.forEach((book) => {
       if (book.coverImage) {
-        urls[book.id] = URL.createObjectURL(book.coverImage);
+        next[book.id] = prev[book.id] || URL.createObjectURL(book.coverImage);
       }
     });
-    setCoverUrls(urls);
-    return () => Object.values(urls).forEach(URL.revokeObjectURL);
+    Object.keys(prev).forEach((id) => {
+      if (!currentIds.has(Number(id)) && prev[id]) URL.revokeObjectURL(prev[id]);
+    });
+    coverUrlsRef.current = next;
+    setCoverUrls(next);
   }, [books]);
 
   return (

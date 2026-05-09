@@ -59,11 +59,12 @@ export default function App() {
     setView('form');
   }
 
-  async function handleReorder(bookId, field, newOrder) {
-    const book = await getBook(bookId);
-    if (!book) return;
-    book[field] = newOrder;
-    await updateBook(book);
+  async function handleReorder(bookIdA, bookIdB, field, orderA, orderB) {
+    const [a, b] = await Promise.all([getBook(bookIdA), getBook(bookIdB)]);
+    if (!a || !b) return;
+    a[field] = orderA;
+    b[field] = orderB;
+    await Promise.all([updateBook(a), updateBook(b)]);
     await loadBooks();
   }
 
