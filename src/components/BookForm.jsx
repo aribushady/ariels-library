@@ -1,7 +1,6 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import StarRating from './StarRating';
 import CoverPicker from './CoverPicker';
-import { createWorker } from 'tesseract.js';
 
 const GENRES = [
   'Absurdist', 'Action', 'Adventure', 'Anthology', 'Classic', 'Coming of Age', 'Contemporary', 'Craft', 'Crime', 'Dark Academia', 'Drama', 'Dystopian',
@@ -25,7 +24,10 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
   const [section, setSection] = useState('fiction');
   const [coverFile, setCoverFile] = useState(null);
   const [coverUrl, setCoverUrl] = useState(null);
-  const [scanning, setScanning] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const searchTimer = useRef(null);
 
   const existingAuthors = useMemo(() => {
     const names = new Set();
@@ -66,52 +68,59 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
     }
   }, [book]);
 
-  const handleCoverChange = useCallback(async (file) => {
+  function handleCoverChange(file) {
     setCoverFile(file);
     setCoverUrl(URL.createObjectURL(file));
+  }
 
-    if (title && author) return;
-
-    setScanning(true);
-    try {
-      const worker = await createWorker('eng');
-      const { data } = await worker.recognize(file);
-      await worker.terminate();
-
-      const text = (data.text || '').trim();
-      if (!text) return;
-
-      const lines = text.split('\n').map((l) => l.trim()).filter((l) => l.length > 1);
-      if (lines.length === 0) return;
-
-      const authorMatch = lines.find((l) =>
-        existingAuthors.some((a) => a.toLowerCase() === l.toLowerCase())
-      );
-
-      if (!author) {
-        if (authorMatch) {
-          setAuthor(authorMatch);
-        } else if (lines.length > 1) {
-          setAuthor(lines[lines.length - 1]);
-        }
-      }
-
-      if (!title) {
-        const titleLines = lines.filter((l) =>
-          l !== (authorMatch || lines[lines.length - 1])
-        );
-        if (titleLines.length > 0) {
-          setTitle(titleLines[0]);
-        } else if (lines.length === 1) {
-          setTitle(lines[0]);
-        }
-      }
-    } catch {
-      // OCR failed silently
-    } finally {
-      setScanning(false);
+  function handleSearchInput(q) {
+    setSearchQuery(q);
+    clearTimeout(searchTimer.current);
+    if (q.trim().length < 2) {
+      setSearchResults([]);
+      return;
     }
-  }, [title, author, existingAuthors]);
+    searchTimer.current = setTimeout(async () => {
+      setSearching(true);
+      try {
+        const res = await fetch(
+          `https://openlibrary.org/search.json?q=${encodeURIComponent(q.trim())}&fields=title,author_name,number_of_pages_median,cover_i&limit=6`
+        );
+        const data = await res.json();
+        setSearchResults(data.docs || []);
+      } catch {
+        setSearchResults([]);
+      } finally {
+        setSearching(false);
+      }
+    }, 400);
+  }
+
+  function selectSearchResult(result) {
+    setTitle(result.title || '');
+    if (result.author_name?.[0]) {
+      const match = existingAuthors.find(
+        (a) => a.toLowerCase() === result.author_name[0].toLowerCase()
+      );
+      setAuthor(match || result.author_name[0]);
+    }
+    if (result.number_of_pages_median) {
+      setPages(result.number_of_pages_median.toString());
+    }
+    if (result.cover_i && !coverUrl) {
+      const imgUrl = `https://covers.openlibrary.org/b/id/${result.cover_i}-L.jpg`;
+      fetch(imgUrl)
+        .then((r) => r.blob())
+        .then((blob) => {
+          const file = new File([blob], 'cover.jpg', { type: 'image/jpeg' });
+          setCoverFile(file);
+          setCoverUrl(URL.createObjectURL(file));
+        })
+        .catch(() => {});
+    }
+    setSearchQuery('');
+    setSearchResults([]);
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -153,8 +162,39 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
       </header>
 
       <form className="book-form" onSubmit={handleSubmit}>
+        {!book && (
+          <div className="book-search-field">
+            <label>
+              Search Book
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearchInput(e.target.value)}
+                placeholder="Search by title or author..."
+              />
+            </label>
+            {searching && <p className="scan-status">Searching...</p>}
+            {searchResults.length > 0 && (
+              <div className="search-results">
+                {searchResults.map((r, i) => (
+                  <button key={i} type="button" className="search-result" onClick={() => selectSearchResult(r)}>
+                    {r.cover_i ? (
+                      <img src={`https://covers.openlibrary.org/b/id/${r.cover_i}-S.jpg`} alt="" className="search-result-cover" />
+                    ) : (
+                      <div className="search-result-cover-placeholder" />
+                    )}
+                    <div className="search-result-info">
+                      <span className="search-result-title">{r.title}</span>
+                      {r.author_name && <span className="search-result-author">{r.author_name[0]}</span>}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         <CoverPicker coverUrl={coverUrl} onChange={handleCoverChange} />
-        {scanning && <p className="scan-status">Scanning cover for title & author...</p>}
 
         <label>
           Title *
