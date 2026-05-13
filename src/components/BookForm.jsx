@@ -78,33 +78,32 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
       const { data } = await worker.recognize(file);
       await worker.terminate();
 
-      const lines = data.lines || [];
+      const text = (data.text || '').trim();
+      if (!text) return;
+
+      const lines = text.split('\n').map((l) => l.trim()).filter((l) => l.length > 1);
       if (lines.length === 0) return;
 
-      const sorted = [...lines]
-        .filter((l) => l.text.trim().length > 1)
-        .sort((a, b) => (b.bbox.y1 - b.bbox.y0) - (a.bbox.y1 - a.bbox.y0));
-
-      if (!title && sorted.length > 0) {
-        const titleLines = sorted.filter((l) => {
-          const h = l.bbox.y1 - l.bbox.y0;
-          return h >= sorted[0].bbox.y1 - sorted[0].bbox.y0 - 5;
-        });
-        setTitle(titleLines.map((l) => l.text.trim()).join(' '));
-      }
+      const authorMatch = lines.find((l) =>
+        existingAuthors.some((a) => a.toLowerCase() === l.toLowerCase())
+      );
 
       if (!author) {
-        const remaining = sorted.filter((l) => {
-          const h = l.bbox.y1 - l.bbox.y0;
-          return h < sorted[0].bbox.y1 - sorted[0].bbox.y0 - 5;
-        });
-        const match = remaining.find((l) =>
-          existingAuthors.some((a) => a.toLowerCase() === l.text.trim().toLowerCase())
+        if (authorMatch) {
+          setAuthor(authorMatch);
+        } else if (lines.length > 1) {
+          setAuthor(lines[lines.length - 1]);
+        }
+      }
+
+      if (!title) {
+        const titleLines = lines.filter((l) =>
+          l !== (authorMatch || lines[lines.length - 1])
         );
-        if (match) {
-          setAuthor(match.text.trim());
-        } else if (remaining.length > 0) {
-          setAuthor(remaining[0].text.trim());
+        if (titleLines.length > 0) {
+          setTitle(titleLines[0]);
+        } else if (lines.length === 1) {
+          setTitle(lines[0]);
         }
       }
     } catch {
