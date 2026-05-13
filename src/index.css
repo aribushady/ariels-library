@@ -716,6 +716,13 @@ body::after {
   display: none;
 }
 
+.scan-status {
+  text-align: center;
+  font-size: 13px;
+  color: var(--accent-light);
+  font-style: italic;
+}
+
 /* Book form */
 .book-form {
   padding: 20px 16px;

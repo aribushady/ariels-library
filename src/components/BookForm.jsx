@@ -1,6 +1,7 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import StarRating from './StarRating';
 import CoverPicker from './CoverPicker';
+import { createWorker } from 'tesseract.js';
 
 const GENRES = [
   'Absurdist', 'Action', 'Adventure', 'Anthology', 'Classic', 'Coming of Age', 'Contemporary', 'Craft', 'Crime', 'Dark Academia', 'Drama', 'Dystopian',
@@ -24,6 +25,7 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
   const [section, setSection] = useState('fiction');
   const [coverFile, setCoverFile] = useState(null);
   const [coverUrl, setCoverUrl] = useState(null);
+  const [scanning, setScanning] = useState(false);
 
   const existingAuthors = useMemo(() => {
     const names = new Set();
@@ -64,10 +66,53 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
     }
   }, [book]);
 
-  function handleCoverChange(file) {
+  const handleCoverChange = useCallback(async (file) => {
     setCoverFile(file);
     setCoverUrl(URL.createObjectURL(file));
-  }
+
+    if (title && author) return;
+
+    setScanning(true);
+    try {
+      const worker = await createWorker('eng');
+      const { data } = await worker.recognize(file);
+      await worker.terminate();
+
+      const lines = data.lines || [];
+      if (lines.length === 0) return;
+
+      const sorted = [...lines]
+        .filter((l) => l.text.trim().length > 1)
+        .sort((a, b) => (b.bbox.y1 - b.bbox.y0) - (a.bbox.y1 - a.bbox.y0));
+
+      if (!title && sorted.length > 0) {
+        const titleLines = sorted.filter((l) => {
+          const h = l.bbox.y1 - l.bbox.y0;
+          return h >= sorted[0].bbox.y1 - sorted[0].bbox.y0 - 5;
+        });
+        setTitle(titleLines.map((l) => l.text.trim()).join(' '));
+      }
+
+      if (!author) {
+        const remaining = sorted.filter((l) => {
+          const h = l.bbox.y1 - l.bbox.y0;
+          return h < sorted[0].bbox.y1 - sorted[0].bbox.y0 - 5;
+        });
+        const match = remaining.find((l) =>
+          existingAuthors.some((a) => a.toLowerCase() === l.text.trim().toLowerCase())
+        );
+        if (match) {
+          setAuthor(match.text.trim());
+        } else if (remaining.length > 0) {
+          setAuthor(remaining[0].text.trim());
+        }
+      }
+    } catch {
+      // OCR failed silently
+    } finally {
+      setScanning(false);
+    }
+  }, [title, author, existingAuthors]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -110,6 +155,7 @@ export default function BookForm({ book, books = [], onSave, onCancel }) {
 
       <form className="book-form" onSubmit={handleSubmit}>
         <CoverPicker coverUrl={coverUrl} onChange={handleCoverChange} />
+        {scanning && <p className="scan-status">Scanning cover for title & author...</p>}
 
         <label>
           Title *
